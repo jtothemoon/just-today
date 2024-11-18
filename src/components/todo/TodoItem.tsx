@@ -15,6 +15,7 @@ interface SortableTodoItemProps {
   onEditStart: () => void;
   onDelete: () => void;
   onEditKeyDown: (e: React.KeyboardEvent) => void;
+  isDragging?: boolean;
 }
 
 export function SortableTodoItem({
@@ -27,25 +28,30 @@ export function SortableTodoItem({
   onEditStart,
   onDelete,
   onEditKeyDown,
+  isDragging,
 }: SortableTodoItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: todo.id });
+    useSortable({ id: todo.id, disabled: isEditing });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    zIndex: isDragging ? 50 : 1,
+    opacity: isDragging ? 0.5 : 1,
   };
 
   return (
     <li
       ref={setNodeRef}
       style={style}
-      className="p-3 bg-white rounded shadow flex items-center gap-3 group"
+      className={`p-3 bg-white rounded shadow flex items-center gap-3 group
+        ${isDragging ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}
+      
     >
       <div
         {...attributes} // 드래그 앤 드롭 관련 속성
         {...listeners} // 드래그 앤 드롭 이벤트
-        className="cursor-grab hover:text-gray-600"
+        className="touch-manipulation cursor-grab hover:text-gray-600 active:cursor-grabbing"
       >
         <GripVertical className="w-4 h-4" />
       </div>
@@ -54,7 +60,7 @@ export function SortableTodoItem({
         type="checkbox"
         checked={todo.isCompleted}
         onChange={onToggle}
-        className="w-5 h-5 cursor-pointer"
+        className="w-5 h-5 cursor-pointer z-10"
       />
 
       {isEditing ? (
@@ -84,7 +90,7 @@ export function SortableTodoItem({
             >
               {getPriorityLabel(todo.priority)}
             </span>
-            <div className="flex gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
               {!todo.isCompleted && (
                 <button
                   onClick={onEditStart}

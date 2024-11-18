@@ -6,7 +6,7 @@ interface DeleteModalProps {
   
   const DeleteModal = ({ onConfirm, onCancel }: DeleteModalProps) => {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]">
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-lg font-semibold mb-4">정말 삭제하시겠습니까?</h2>
           <div className="flex gap-3 justify-end">

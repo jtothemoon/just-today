@@ -50,7 +50,7 @@ const TodoList = ({
     useSensor(TouchSensor, {
       // 모바일용 터치 센서 설정
       activationConstraint: {
-        delay: 200,      // 200ms 길게 누르기
+        delay: 150,      // 200ms 길게 누르기
         tolerance: 8,    // 8px 이내 움직임 허용
       }
     }),

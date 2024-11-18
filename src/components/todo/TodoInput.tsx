@@ -7,9 +7,10 @@ interface TodoInputProps {
   value: string;
   onChange: (value: string) => void;
   onSubmit: (text: string, priority: Priority) => void;
+  disabled?: boolean;
 }
 
-const TodoInput = ({ value, onChange, onSubmit }: TodoInputProps) => {
+const TodoInput = ({ value, onChange, onSubmit, disabled }: TodoInputProps) => {
   const [priority, setPriority] = useState<Priority>('MEDIUM');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -34,6 +35,7 @@ const TodoInput = ({ value, onChange, onSubmit }: TodoInputProps) => {
           onChange={(e) => onChange(e.target.value)}
           placeholder="할 일을 입력하세요"
           className="w-full p-2 pr-20 border rounded"
+          disabled={disabled}
         />
         <button
           type="button"
@@ -46,6 +48,7 @@ const TodoInput = ({ value, onChange, onSubmit }: TodoInputProps) => {
       <button
         type="submit"
         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+        disabled={disabled}
       >
         추가
       </button>

@@ -11,11 +11,18 @@
 ### ✅ Todo 관리
 - Todo 추가/수정/삭제
 - 완료 체크
-- 최대 Todo 개수 설정 및 제한
+- 최대 Todo 개수 설정 및 제한 (1-10개)
+- 드래그 앤 드롭으로 순서 변경
+- 우선순위 설정 (높음/중간/낮음)
 
 ### 🔔 알림
 - 작업 완료시 알림 메시지
 - Todo 추가/수정/삭제시 상태 알림
+
+### 💫 기타
+- 모바일 친화적 UI
+- 완료된 항목 필터링
+- 수동 초기화 기능
 
 ## 기술 스택
 
@@ -24,6 +31,11 @@
 - Tailwind CSS
 - React Router
 - Vite
+- DnD Kit (드래그 앤 드롭)
+
+## 데모
+
+[https://just-today.vercel.app](https://just-today.vercel.app)
 
 ## 시작하기
 

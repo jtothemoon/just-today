@@ -20,25 +20,37 @@ export const useTodos = () => {
     return [];
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
+
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem(STORAGE_KEY.TODOS, JSON.stringify(todos));
   }, [todos]);
 
-  const addTodo = useCallback((content: string, priority: Priority) => {
-    const todo: Todo = {
-      id: crypto.randomUUID(),
-      content: content.trim(),
-      isCompleted: false,
-      createdAt: new Date(),
-      priority,
-    };
+  const addTodo = useCallback(async (content: string, priority: Priority) => {
+    setActionLoading(true);
+    try {
+      const todo: Todo = {
+        id: crypto.randomUUID(),
+        content: content.trim(),
+        isCompleted: false,
+        createdAt: new Date(),
+        priority,
+      };
 
-    setTodos(prev => [...prev, todo]);
-    showToast('할 일이 추가되었습니다.', 'success');
+      setTodos(prev => [...prev, todo]);
+      showToast('할 일이 추가되었습니다.', 'success');
+    } finally {
+      setActionLoading(false);
+    }
   }, [showToast]);
 
   const toggleTodo = useCallback((id: string) => {
@@ -67,21 +79,31 @@ export const useTodos = () => {
 
   const updateTodo = useCallback((id: string, content: string) => {
     if (!content.trim()) return;
-    
-    setTodos(prev =>
-      prev.map(todo =>
-        todo.id === id ? { ...todo, content: content.trim() } : todo
-      )
-    );
-    setEditingId(null);
-    setEditingText('');
-    showToast('할 일이 수정되었습니다.', 'success');
+
+    setActionLoading(true);
+    try {
+      setTodos(prev =>
+        prev.map(todo =>
+          todo.id === id ? { ...todo, content: content.trim() } : todo
+        )
+      );
+      setEditingId(null);
+      setEditingText('');
+      showToast('할 일이 수정되었습니다.', 'success');
+    } finally {
+      setActionLoading(false);
+    }
   }, [showToast]);
 
   const deleteTodo = useCallback((id: string) => {
-    setTodos(prev => prev.filter(todo => todo.id !== id));
-    setDeleteId(null);
-    showToast('할 일이 삭제되었습니다.', 'error');
+    setActionLoading(true);
+    try {
+      setTodos(prev => prev.filter(todo => todo.id !== id));
+      setDeleteId(null);
+      showToast('할 일이 삭제되었습니다.', 'error');
+    } finally {
+      setActionLoading(false);
+    }
   }, [showToast]);
 
   const startEditing = useCallback((todo: Todo) => {
@@ -90,9 +112,14 @@ export const useTodos = () => {
   }, []);
 
   const resetTodos = useCallback(() => {
-    setTodos([]);
-    localStorage.removeItem(STORAGE_KEY.TODOS);
-    showToast('새로운 하루가 시작되었습니다.', 'info');
+    setActionLoading(true);
+    try {
+      setTodos([]);
+      localStorage.removeItem(STORAGE_KEY.TODOS);
+      showToast('새로운 하루가 시작되었습니다.', 'info');
+    } finally {
+      setActionLoading(false);
+    }
   }, [showToast]);
 
   const reorderTodos = (newTodos: Todo[]) => {
@@ -101,6 +128,8 @@ export const useTodos = () => {
 
   return {
     todos,
+    isLoading,
+    actionLoading,
     editingId,
     editingText,
     deleteId,

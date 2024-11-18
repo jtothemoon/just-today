@@ -9,11 +9,14 @@ import DeleteModal from "../components/common/DeleteModal";
 import Header from "../components/layout/Header";
 import { checkShouldReset } from "../utils/date";
 import { STORAGE_KEY } from "@/constants/storage";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 const TodoPage = () => {
   const { settings } = useSettings();
   const {
     todos,
+    isLoading,
+    actionLoading,
     editingId,
     editingText,
     deleteId,
@@ -73,6 +76,10 @@ const TodoPage = () => {
     ? todos.filter(todo => !todo.isCompleted)
     : todos;
 
+  if (isLoading) {
+    return <LoadingSpinner />
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header
@@ -103,6 +110,8 @@ const TodoPage = () => {
             setNewTodo("");
           }}
         />
+
+        {actionLoading && <LoadingSpinner />}
 
         <TodoList
           todos={filteredTodos}

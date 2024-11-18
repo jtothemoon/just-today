@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const SetupPage = () => {
   const navigate = useNavigate();
-  const [maxTodos, setMaxTodos] = useState(10);
+  const [maxTodos, setMaxTodos] = useState(5);
   const [resetTime, setResetTime] = useState("00:00");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -30,10 +30,10 @@ const SetupPage = () => {
               min="1"
               max="20"
               value={maxTodos}
-              onChange={(e) => setMaxTodos(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
+              onChange={(e) => setMaxTodos(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))}
               className="w-full p-3 border rounded-lg"
             />
-            <p className="mt-1 text-sm text-gray-500">1-20개 사이로 설정할 수 있습니다</p>
+            <p className="mt-1 text-sm text-gray-500">1-10개 사이로 설정할 수 있습니다</p>
           </div>
 
           <div>

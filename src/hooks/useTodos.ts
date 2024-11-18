@@ -92,6 +92,10 @@ export const useTodos = () => {
     showToast('새로운 하루가 시작되었습니다.', 'info');
   }, [showToast]);
 
+  const reorderTodos = (newTodos: Todo[]) => {
+    setTodos(newTodos);
+  };
+
   return {
     todos,
     editingId,
@@ -106,5 +110,6 @@ export const useTodos = () => {
     deleteTodo,
     startEditing,
     resetTodos,
+    reorderTodos,
   };
 };

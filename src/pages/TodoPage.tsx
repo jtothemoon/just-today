@@ -28,6 +28,7 @@ const TodoPage = () => {
     deleteTodo,
     startEditing,
     resetTodos,
+    reorderTodos,
   } = useTodos();
 
   const [newTodo, setNewTodo] = useState('');
@@ -119,6 +120,7 @@ const TodoPage = () => {
           onEditStart={startEditing}
           onDelete={setDeleteId}
           onEditKeyDown={handleEditKeyDown}
+          onReorder={reorderTodos}
         />
 
         {deleteId && (

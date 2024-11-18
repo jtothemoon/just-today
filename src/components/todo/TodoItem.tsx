@@ -1,8 +1,10 @@
-// src/components/todo/TodoItem.tsx
-import { Pencil, Trash2 } from 'lucide-react';
+// src/components/todo/SortableTodoItem.tsx
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Pencil, Trash2, GripVertical } from 'lucide-react';
 import { Todo } from '../../types/todo';
 
-interface TodoItemProps {
+interface SortableTodoItemProps {
   todo: Todo;
   isEditing: boolean;
   editingText: string;
@@ -14,7 +16,7 @@ interface TodoItemProps {
   onEditKeyDown: (e: React.KeyboardEvent) => void;
 }
 
-const TodoItem = ({
+export function SortableTodoItem({
   todo,
   isEditing,
   editingText,
@@ -23,16 +25,42 @@ const TodoItem = ({
   onEditComplete,
   onEditStart,
   onDelete,
-  onEditKeyDown,
-}: TodoItemProps) => {
+  onEditKeyDown
+}: SortableTodoItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition
+  } = useSortable({ id: todo.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition
+  };
+
   return (
-    <li className="p-3 bg-white rounded shadow flex items-center gap-3 group">
+    <li
+      ref={setNodeRef}
+      style={style}
+      className="p-3 bg-white rounded shadow flex items-center gap-3 group"
+    >
+      <div
+        {...attributes}
+        {...listeners}
+        className="cursor-grab hover:text-gray-600"
+      >
+        <GripVertical className="w-4 h-4" />
+      </div>
+      
       <input
         type="checkbox"
         checked={todo.isCompleted}
         onChange={onToggle}
         className="w-5 h-5 cursor-pointer"
       />
+      
       {isEditing ? (
         <input
           type="text"
@@ -46,9 +74,8 @@ const TodoItem = ({
       ) : (
         <div className="flex-1 flex items-center gap-2">
           <span
-            className={`flex-1 ${!todo.isCompleted ? 'cursor-pointer' : ''} ${
-              todo.isCompleted ? 'line-through text-gray-400' : ''
-            }`}
+            className={`flex-1 ${!todo.isCompleted ? 'cursor-pointer' : ''} 
+            ${todo.isCompleted ? 'line-through text-gray-400' : ''}`}
             onClick={() => !todo.isCompleted && onEditStart()}
           >
             {todo.content}
@@ -73,6 +100,4 @@ const TodoItem = ({
       )}
     </li>
   );
-};
-
-export default TodoItem;
+}

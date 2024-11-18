@@ -1,6 +1,5 @@
-// src/components/layout/Header.tsx
 import { Settings, MoreVertical } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
@@ -20,12 +19,29 @@ const Header = ({
 }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // 외부 클릭 감지
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    // 마우스 클릭 이벤트 리스너 등록
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // 컴포넌트 언마운트 시 리스너 제거
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="sticky top-0 bg-white z-10 border-b">
       <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
         <h1 className="text-xl font-bold">Just Today</h1>
-        
+
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('/')}
@@ -35,7 +51,7 @@ const Header = ({
             <Settings className="w-5 h-5" />
           </button>
 
-          <div className="relative">
+          <div className="relative" ref={menuRef}>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"

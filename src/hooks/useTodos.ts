@@ -3,14 +3,16 @@ import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '../context/ToastContext';
 import { Todo } from '../types/todo';
 import { STORAGE_KEY } from '../constants/storage';
+import { Priority } from '../types/todo';
 
 export const useTodos = () => {
   const { showToast } = useToast();
+
   const [todos, setTodos] = useState<Todo[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY.TODOS);
     if (saved) {
       const initialValue = JSON.parse(saved);
-      return initialValue.map((todo: any) => ({
+      return initialValue.map((todo: Omit<Todo, 'createdAt'> & { createdAt: string }) => ({
         ...todo,
         createdAt: new Date(todo.createdAt),
       }));
@@ -26,12 +28,13 @@ export const useTodos = () => {
     localStorage.setItem(STORAGE_KEY.TODOS, JSON.stringify(todos));
   }, [todos]);
 
-  const addTodo = useCallback((content: string) => {
+  const addTodo = useCallback((content: string, priority: Priority) => {
     const todo: Todo = {
       id: crypto.randomUUID(),
       content: content.trim(),
       isCompleted: false,
       createdAt: new Date(),
+      priority,
     };
 
     setTodos(prev => [...prev, todo]);

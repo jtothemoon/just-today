@@ -1,8 +1,9 @@
-// src/components/todo/SortableTodoItem.tsx
+// src/components/todo/TodoItem.tsx
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Pencil, Trash2, GripVertical } from 'lucide-react';
 import { Todo } from '../../types/todo';
+import { getPriorityStyle, getPriorityLabel } from '../../utils/priority';
 
 interface SortableTodoItemProps {
   todo: Todo;
@@ -80,21 +81,26 @@ export function SortableTodoItem({
           >
             {todo.content}
           </span>
-          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            {!todo.isCompleted && (
+          <div className="flex items-center gap-2">
+            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getPriorityStyle(todo.priority)}`}>
+              {getPriorityLabel(todo.priority)}
+            </span>
+            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              {!todo.isCompleted && (
+                <button
+                  onClick={onEditStart}
+                  className="p-1 hover:bg-gray-100 rounded transition-colors"
+                >
+                  <Pencil className="w-4 h-4 text-gray-500" />
+                </button>
+              )}
               <button
-                onClick={onEditStart}
+                onClick={onDelete}
                 className="p-1 hover:bg-gray-100 rounded transition-colors"
               >
-                <Pencil className="w-4 h-4 text-gray-500" />
+                <Trash2 className="w-4 h-4 text-red-500" />
               </button>
-            )}
-            <button
-              onClick={onDelete}
-              className="p-1 hover:bg-gray-100 rounded transition-colors"
-            >
-              <Trash2 className="w-4 h-4 text-red-500" />
-            </button>
+            </div>
           </div>
         </div>
       )}

@@ -56,15 +56,11 @@ export function SortableTodoItem({
        <GripVertical className="w-4 h-4" />
      </div>
 
-     {/* 모바일용 드래그 영역 */}
-     <div
-       {...attributes}
-       {...listeners}
-       className="absolute md:hidden inset-0 touch-none z-0"
-     />
-     
      {/* 실제 컨텐츠 영역 */}
-     <div className="flex-1 flex items-center gap-3 z-10 relative">
+     <div 
+      {...attributes}
+      {...listeners}
+      className="flex-1 flex items-center gap-3 z-10 relative">
        <input
          type="checkbox"
          checked={todo.isCompleted}

@@ -45,12 +45,20 @@ export function SortableTodoItem({
     <li
       ref={setNodeRef}
       style={style}
-      className="p-3 bg-white rounded shadow flex items-center gap-3 group"
+      className="relative p-3 bg-white rounded shadow flex items-center gap-3 group touch-none"
     >
+      {/* 모바일 전체 드래그 영역 */}
       <div
         {...attributes}
         {...listeners}
-        className="cursor-grab hover:text-gray-600"
+        className="absolute md:hidden inset-0 z-10"
+      />
+      
+      {/* 데스크톱 드래그 핸들 */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="hidden md:block cursor-grab hover:text-gray-600"
       >
         <GripVertical className="w-4 h-4" />
       </div>
@@ -59,7 +67,7 @@ export function SortableTodoItem({
         type="checkbox"
         checked={todo.isCompleted}
         onChange={onToggle}
-        className="w-5 h-5 cursor-pointer"
+        className="relative w-5 h-5 cursor-pointer z-20"
       />
       
       {isEditing ? (
@@ -69,23 +77,19 @@ export function SortableTodoItem({
           onChange={(e) => onEdit(e.target.value)}
           onBlur={onEditComplete}
           onKeyDown={onEditKeyDown}
-          className="flex-1 p-1 border rounded"
+          className="flex-1 p-1 border rounded z-20"
           autoFocus
         />
       ) : (
-        <div className="flex-1 flex items-center gap-2">
-          <span
-            className={`flex-1 ${!todo.isCompleted ? 'cursor-pointer' : ''} 
-            ${todo.isCompleted ? 'line-through text-gray-400' : ''}`}
-            onClick={() => !todo.isCompleted && onEditStart()}
-          >
+        <div className="relative flex-1 flex items-center gap-2 z-20">
+          <span className={`flex-1 ${todo.isCompleted ? 'line-through text-gray-400' : ''}`}>
             {todo.content}
           </span>
           <div className="flex items-center gap-2">
             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getPriorityStyle(todo.priority)}`}>
               {getPriorityLabel(todo.priority)}
             </span>
-            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
               {!todo.isCompleted && (
                 <button
                   onClick={onEditStart}

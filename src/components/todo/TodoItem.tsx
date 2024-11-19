@@ -1,9 +1,10 @@
 // src/components/todo/TodoItem.tsx
+import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useMediaQuery } from "react-responsive";
-import { Pencil, Trash2, GripVertical } from "lucide-react";
-import { Todo } from "../../types/todo";
+import { Pencil, Trash2, GripVertical, Check } from "lucide-react";
+import { Todo, Priority } from "../../types/todo";
 import { getPriorityStyle, getPriorityLabel } from "../../utils/priority";
 
 interface SortableTodoItemProps {
@@ -12,10 +13,10 @@ interface SortableTodoItemProps {
   editingText: string;
   onToggle: () => void;
   onEdit: (text: string) => void;
-  onEditComplete: () => void;
+  onEditComplete: (priority?: Priority) => void;
   onEditStart: () => void;
   onDelete: () => void;
-  onEditKeyDown: (e: React.KeyboardEvent) => void;
+  onEditKeyDown: (e: React.KeyboardEvent, priority?: Priority) => void;
   isDragging?: boolean;
 }
 
@@ -28,10 +29,12 @@ export function SortableTodoItem({
   onEditComplete,
   onEditStart,
   onDelete,
-  onEditKeyDown,
   isDragging,
 }: SortableTodoItemProps) {
   const isDesktop = useMediaQuery({ query: "(min-width: 768px)" });
+  const [editingPriority, setEditingPriority] = useState<Priority>(
+    todo.priority
+  );
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: todo.id, disabled: isEditing });
@@ -74,15 +77,35 @@ export function SortableTodoItem({
         />
 
         {isEditing ? (
-          <input
-            type="text"
-            value={editingText}
-            onChange={(e) => onEdit(e.target.value)}
-            onBlur={onEditComplete}
-            onKeyDown={onEditKeyDown}
-            className="flex-1 p-1 border rounded"
-            autoFocus
-          />
+          <div className="flex-1 flex items-center gap-2">
+            <input
+              type="text"
+              value={editingText}
+              onChange={(e) => onEdit(e.target.value)}
+              className="flex-1 p-1 border rounded"
+              autoFocus
+            />
+            <button
+              type="button"
+              className={`px-2 py-0.5 rounded-full text-xs font-medium ${getPriorityStyle(
+                editingPriority
+              )}`}
+              onClick={() => {
+                const priorities: Priority[] = ["HIGH", "MEDIUM", "LOW"];
+                const currentIndex = priorities.indexOf(editingPriority);
+                const nextIndex = (currentIndex + 1) % priorities.length;
+                setEditingPriority(priorities[nextIndex]);
+              }}
+            >
+              {getPriorityLabel(editingPriority)}
+            </button>
+            <button
+              onClick={() => onEditComplete(editingPriority)}
+              className="p-1 hover:bg-gray-100 rounded transition-colors"
+            >
+              <Check className="w-4 h-4 text-green-500" />
+            </button>
+          </div>
         ) : (
           <div className="flex-1 flex items-center gap-2">
             <span

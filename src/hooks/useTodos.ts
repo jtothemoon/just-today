@@ -77,22 +77,21 @@ export const useTodos = () => {
     });
   }, [showToast]);
 
-  const updateTodo = useCallback((id: string, content: string) => {
+  const updateTodo = useCallback((id: string, content: string, priority?: Priority) => {
     if (!content.trim()) return;
-
-    setActionLoading(true);
-    try {
-      setTodos(prev =>
-        prev.map(todo =>
-          todo.id === id ? { ...todo, content: content.trim() } : todo
-        )
-      );
-      setEditingId(null);
-      setEditingText('');
-      showToast('할 일이 수정되었습니다.', 'success');
-    } finally {
-      setActionLoading(false);
-    }
+    
+    setTodos(prev =>
+      prev.map(todo =>
+        todo.id === id ? { 
+          ...todo, 
+          content: content.trim(),
+          priority: priority || todo.priority  // 우선순위가 제공되면 업데이트
+        } : todo
+      )
+    );
+    setEditingId(null);
+    setEditingText('');
+    showToast('할 일이 수정되었습니다.', 'success');
   }, [showToast]);
 
   const deleteTodo = useCallback((id: string) => {

@@ -18,7 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { SortableTodoItem } from "./TodoItem";
-import { Todo } from "../../types/todo";
+import { Todo, Priority } from "../../types/todo";
 
 // src/components/todo/TodoList.tsx
 interface TodoListProps {
@@ -27,10 +27,10 @@ interface TodoListProps {
   editingText: string;
   onToggle: (id: string) => void;
   onEdit: (text: string) => void;
-  onEditComplete: (id: string, content: string) => void;
+  onEditComplete: (id: string, content: string, priority?: Priority) => void;
   onEditStart: (todo: Todo) => void;
   onDelete: (id: string) => void;
-  onEditKeyDown: (e: React.KeyboardEvent, id: string) => void;
+  onEditKeyDown: (e: React.KeyboardEvent, id: string, priority?: Priority) => void;
   onReorder: (newTodos: Todo[]) => void; // 추가
 }
 
@@ -109,10 +109,10 @@ const TodoList = ({
               editingText={editingText}
               onToggle={() => onToggle(todo.id)}
               onEdit={onEdit}
-              onEditComplete={() => onEditComplete(todo.id, editingText)}
+              onEditComplete={(priority) => onEditComplete(todo.id, editingText, priority)}
               onEditStart={() => onEditStart(todo)}
               onDelete={() => onDelete(todo.id)}
-              onEditKeyDown={(e) => onEditKeyDown(e, todo.id)}
+              onEditKeyDown={(e, priority) => onEditKeyDown(e, todo.id, priority)}
               isDragging={activeId === todo.id}
             />
           ))}

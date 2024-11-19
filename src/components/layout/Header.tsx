@@ -1,12 +1,14 @@
 import { Settings, MoreVertical } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SortType } from '@/types/todo';
 
 interface HeaderProps {
   onClearAll: () => void;
   onClearCompleted: () => void;
   onReset: () => void;
   onToggleHideCompleted: () => void;
+  onSort: (type: SortType) => void;
   isHidingCompleted: boolean;
 }
 
@@ -15,7 +17,8 @@ const Header = ({
   onClearCompleted,
   onReset,
   onToggleHideCompleted,
-  isHidingCompleted
+  onSort,
+  isHidingCompleted,
 }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -62,6 +65,35 @@ const Header = ({
 
             {isMenuOpen && (
               <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-lg border">
+                <div className="px-4 py-1 text-xs text-gray-500">정렬</div>
+                <button
+                  onClick={() => {
+                    onSort('priority');
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                >
+                  우선순위순
+                </button>
+                <button
+                  onClick={() => {
+                    onSort('created');
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                >
+                  생성순
+                </button>
+                <button
+                  onClick={() => {
+                    onSort('completed');
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+                >
+                  완료순
+                </button>
+                <hr className="my-2" />
                 <button
                   onClick={() => {
                     onToggleHideCompleted();

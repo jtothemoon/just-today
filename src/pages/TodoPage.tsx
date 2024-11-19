@@ -10,6 +10,7 @@ import Header from "../components/layout/Header";
 import { checkShouldReset } from "../utils/date";
 import { STORAGE_KEY } from "@/constants/storage";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { Priority } from "@/types/todo";
 
 const TodoPage = () => {
   const { settings } = useSettings();
@@ -50,10 +51,10 @@ const TodoPage = () => {
     return () => clearInterval(interval);
   }, [todos, settings.resetTime, resetTodos]);
 
-  const handleEditKeyDown = (e: React.KeyboardEvent, id: string) => {
+  const handleEditKeyDown = (e: React.KeyboardEvent, id: string, priority?: Priority) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      updateTodo(id, editingText);
+      updateTodo(id, editingText, priority);
     } else if (e.key === "Escape") {
       setEditingText("");
       setEditingId(null);
@@ -76,6 +77,23 @@ const TodoPage = () => {
     ? todos.filter(todo => !todo.isCompleted)
     : todos;
 
+  const handleSort = (type: 'priority' | 'created' | 'completed') => {
+    const sortedTodos = [...filteredTodos].sort((a, b) => {
+      switch (type) {
+        case 'priority':
+          const priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 };
+          return priorityOrder[a.priority] - priorityOrder[b.priority];
+        case 'completed':
+          return Number(a.isCompleted) - Number(b.isCompleted);
+        case 'created':
+          return b.createdAt.getTime() - a.createdAt.getTime();  // 최신순
+        default:
+          return 0;
+      }
+    });
+    reorderTodos(sortedTodos);
+  };
+
   if (isLoading) {
     return <LoadingSpinner />
   }
@@ -88,6 +106,7 @@ const TodoPage = () => {
         onReset={resetTodos}
         onToggleHideCompleted={() => setIsHidingCompleted(!isHidingCompleted)}
         isHidingCompleted={isHidingCompleted}
+        onSort={handleSort}
       />
       
       <div className="max-w-lg mx-auto px-4 py-4">
@@ -119,7 +138,7 @@ const TodoPage = () => {
           editingText={editingText}
           onToggle={toggleTodo}
           onEdit={setEditingText}
-          onEditComplete={(id, content) => updateTodo(id, content)}
+          onEditComplete={(id, content, priority) => updateTodo(id, content, priority)}
           onEditStart={startEditing}
           onDelete={setDeleteId}
           onEditKeyDown={handleEditKeyDown}

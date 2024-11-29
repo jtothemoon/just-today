@@ -40,7 +40,7 @@
 
 ## 데모
 
-[https://just-today.vercel.app](https://just-today.vercel.app)
+[https://just-today-lime.vercel.app](https://just-today-lime.vercel.app/)
 
 ## 시작하기
 
